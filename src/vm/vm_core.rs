@@ -108,6 +108,11 @@ impl VirtualMachine {
         }
     }
 
+    //Simple getter for trace attribute
+    pub fn get_trace(&self) -> Option<&Vec<TraceEntry>> {
+        return self.trace.as_ref();
+    }
+
     ///Returns the encoded instruction (the value at pc) and the immediate value (the value at pc + 1, if it exists in the memory).
     fn get_instruction_encoding(
         &self,

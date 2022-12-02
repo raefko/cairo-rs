@@ -1,5 +1,6 @@
 use crate::serde::deserialize_program::{
-    deserialize_program, deserialize_program_from_string, Attribute, HintParams, Identifier, ReferenceManager,
+    deserialize_program, deserialize_program_from_string, Attribute, HintParams, Identifier,
+    ReferenceManager,
 };
 use crate::types::errors::program_errors::ProgramError;
 use crate::types::relocatable::MaybeRelocatable;
@@ -288,11 +289,8 @@ mod tests {
             }
         }        
         "#;
-        let program: Program = Program::from_string(
-            &json_artifact.to_string(),
-            Some("main"),
-        )
-        .expect("Failed to deserialize program");
+        let program: Program = Program::from_string(&json_artifact.to_string(), Some("main"))
+            .expect("Failed to deserialize program");
 
         let builtins: Vec<String> = Vec::new();
         let data: Vec<MaybeRelocatable> = vec![
@@ -370,7 +368,7 @@ mod tests {
         assert_eq!(program.main, Some(0));
         assert_eq!(program.identifiers, identifiers);
     }
-    
+
     #[test]
     fn deserialize_program_test() {
         let program: Program = Program::from_file(
