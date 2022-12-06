@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 ///A trace entry for every instruction that was executed.
 ///Holds the register values before the instruction was executed.
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct TraceEntry {
     pub pc: Relocatable,
     pub ap: Relocatable,

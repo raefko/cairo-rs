@@ -938,6 +938,52 @@ impl CairoRunner {
     }
 
     #[allow(clippy::too_many_arguments)]
+    pub fn run_from_entrypoint_fuzz(
+        &mut self,
+        entrypoint: usize,
+        args: Vec<MaybeRelocatable>,
+        //typed_args: bool,
+        verify_secure: bool,
+        //apply_modulo_to_args: bool,
+        vm: &mut VirtualMachine,
+        hint_processor: &dyn HintProcessor,
+    ) -> Result<(), VirtualMachineError> {
+        /*let stack = if typed_args {
+            if args.len() != 1 {
+                return Err(VirtualMachineError::InvalidArgCount(1, args.len()));
+            }
+
+            vm.segments.gen_typed_args(args, vm)?
+        } else {
+            let mut stack = Vec::new();
+            for arg in args {
+                let prime = match apply_modulo_to_args {
+                    true => Some(&vm.prime),
+                    false => None,
+                };
+
+                stack.push(vm.segments.gen_arg(arg, prime, &mut vm.memory)?);
+            }
+
+            stack
+        };*/
+        let stack = args;
+        let return_fp = vm.segments.add(&mut vm.memory);
+        let end = self.initialize_function_entrypoint(vm, entrypoint, stack, return_fp.into())?;
+
+        self.initialize_vm(vm)?;
+
+        self.run_until_pc(end, vm, hint_processor)?;
+        self.end_run(true, false, vm, hint_processor)?;
+
+        if verify_secure {
+            verify_secure_runner(self, false, vm)?;
+        }
+
+        Ok(())
+    }
+
+    #[allow(clippy::too_many_arguments)]
     pub fn run_from_entrypoint(
         &mut self,
         entrypoint: usize,
